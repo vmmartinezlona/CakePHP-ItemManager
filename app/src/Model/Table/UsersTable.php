@@ -38,8 +38,8 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('users');
-        $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+        $this->setDisplayField('user_id');
+        $this->setPrimaryKey('user_id');
     }
 
     /**
@@ -51,8 +51,8 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create');
+            ->integer('user_id')
+            ->allowEmptyString('user_id', null, 'create');
 
         $validator
             ->scalar('username')
@@ -77,9 +77,8 @@ class UsersTable extends Table
             ->notEmptyString('is_active');
 
         $validator
-            ->date('create_date')
-            ->requirePresence('create_date', 'create')
-            ->notEmptyDate('create_date');
+            ->dateTime('create_date')
+            ->allowEmptyDateTime('create_date');
 
         return $validator;
     }
