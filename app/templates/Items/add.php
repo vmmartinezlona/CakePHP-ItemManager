@@ -18,16 +18,14 @@
                 <legend><?= __('Add Item') ?></legend>
                 <?php
                     echo $this->Form->control('name');
-                    echo $this->Form->control('vendor_id');
-                    echo $this->Form->control('type_id');
+                    echo $this->Form->control('vendor_id', ['options' => $vendors, 'empty' => true]);
+                    echo $this->Form->control('type_id', ['options' => $types, 'empty' => true]);
                     echo $this->Form->control('serial_number');
                     echo $this->Form->control('price');
                     echo $this->Form->control('weight');
                     echo $this->Form->control('color');
-                    echo $this->Form->control('release_date');
+                    echo $this->Form->control('release_date', ['empty' => true]);
                     echo $this->Form->control('photo');
-                    echo $this->Form->control('tags');
-                    echo $this->Form->control('created_date');
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

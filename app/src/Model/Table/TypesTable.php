@@ -9,9 +9,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Type Model
- *
- * @property \App\Model\Table\ItemsTable&\Cake\ORM\Association\HasMany $Items
+ * Types Model
  *
  * @method \App\Model\Entity\Type newEmptyEntity()
  * @method \App\Model\Entity\Type newEntity(array $data, array $options = [])
@@ -27,7 +25,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Type[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Type[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
-class TypeTable extends Table
+class TypesTable extends Table
 {
     /**
      * Initialize method
@@ -39,13 +37,9 @@ class TypeTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('type');
+        $this->setTable('types');
         $this->setDisplayField('name');
-        $this->setPrimaryKey('id');
-
-        $this->hasMany('Items', [
-            'foreignKey' => 'type_id',
-        ]);
+        $this->setPrimaryKey('type_id');
     }
 
     /**
@@ -57,8 +51,8 @@ class TypeTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create');
+            ->integer('type_id')
+            ->allowEmptyString('type_id', null, 'create');
 
         $validator
             ->scalar('name')

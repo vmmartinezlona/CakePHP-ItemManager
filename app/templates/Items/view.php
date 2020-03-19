@@ -4,7 +4,6 @@
  * @var \App\Model\Entity\Item $item
  */
 ?>
-
 <div class="row">
     <aside class="column">
         <div class="side-nav">
@@ -24,6 +23,14 @@
                     <td><?= h($item->name) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Vendor') ?></th>
+                    <td><?= $item->has('vendor') ? $this->Html->link($item->vendor->name, ['controller' => 'vendors', 'action' => 'view', $item->vendor->vendor_id]) : '' ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Type') ?></th>
+                    <td><?= $item->has('type') ? $this->Html->link($item->type->name, ['controller' => 'types', 'action' => 'view', $item->type->type_id]) : '' ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Serial Number') ?></th>
                     <td><?= h($item->serial_number) ?></td>
                 </tr>
@@ -36,20 +43,8 @@
                     <td><?= h($item->photo) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Tags') ?></th>
-                    <td><?= h($item->tags) ?></td>
-                </tr>
-                <tr>
                     <th><?= __('Id') ?></th>
                     <td><?= $this->Number->format($item->id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Vendor Id') ?></th>
-                    <td><?= $this->Number->format($item->vendor_id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Type Id') ?></th>
-                    <td><?= $this->Number->format($item->type_id) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Price') ?></th>
@@ -58,6 +53,10 @@
                 <tr>
                     <th><?= __('Weight') ?></th>
                     <td><?= $this->Number->format($item->weight) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('User Id') ?></th>
+                    <td><?= $this->Number->format($item->user_id) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Release Date') ?></th>

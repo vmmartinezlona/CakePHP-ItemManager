@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 /**
- * Type Controller
+ * Types Controller
  *
- * @property \App\Model\Table\TypeTable $Type
+ * @property \App\Model\Table\TypesTable $Types
  *
  * @method \App\Model\Entity\Type[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class TypeController extends AppController
+class TypesController extends AppController
 {
     /**
      * Index method
@@ -19,9 +19,10 @@ class TypeController extends AppController
      */
     public function index()
     {
-        $type = $this->paginate($this->Type);
-
-        $this->set(compact('type'));
+        $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
+        $types = $this->paginate($this->Types);
+        $this->set(compact('types'));
     }
 
     /**
@@ -33,10 +34,11 @@ class TypeController extends AppController
      */
     public function view($id = null)
     {
-        $type = $this->Type->get($id, [
-            'contain' => ['Items'],
+        $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
+        $type = $this->Types->get($id, [
+            'contain' => [],
         ]);
-
         $this->set('type', $type);
     }
 
@@ -47,10 +49,12 @@ class TypeController extends AppController
      */
     public function add()
     {
-        $type = $this->Type->newEmptyEntity();
+        $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
+        $type = $this->Types->newEmptyEntity();
         if ($this->request->is('post')) {
-            $type = $this->Type->patchEntity($type, $this->request->getData());
-            if ($this->Type->save($type)) {
+            $type = $this->Types->patchEntity($type, $this->request->getData());
+            if ($this->Types->save($type)) {
                 $this->Flash->success(__('The type has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -69,12 +73,14 @@ class TypeController extends AppController
      */
     public function edit($id = null)
     {
-        $type = $this->Type->get($id, [
+        $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
+        $type = $this->Types->get($id, [
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $type = $this->Type->patchEntity($type, $this->request->getData());
-            if ($this->Type->save($type)) {
+            $type = $this->Types->patchEntity($type, $this->request->getData());
+            if ($this->Types->save($type)) {
                 $this->Flash->success(__('The type has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -93,14 +99,36 @@ class TypeController extends AppController
      */
     public function delete($id = null)
     {
+        $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
         $this->request->allowMethod(['post', 'delete']);
-        $type = $this->Type->get($id);
-        if ($this->Type->delete($type)) {
+        $type = $this->Types->get($id);
+        if ($this->Types->delete($type)) {
             $this->Flash->success(__('The type has been deleted.'));
         } else {
             $this->Flash->error(__('The type could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+
+    public function isAuthorized() {
+        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+    }
+
+    public function redirectToRoot() {
+        return $this->redirect([
+            'controller' => 'items',
+            'action' => 'index'
+        ]);
+    }
+
+    public function authorizedFlow() {
+        if($this->isAuthorized()){
+            return true;
+        } else {
+            $this->redirectToRoot();
+        }
     }
 }

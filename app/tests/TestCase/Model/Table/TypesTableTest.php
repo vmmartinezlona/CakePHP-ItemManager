@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\TypeTable;
+use App\Model\Table\TypesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\TypeTable Test Case
+ * App\Model\Table\TypesTable Test Case
  */
-class TypeTableTest extends TestCase
+class TypesTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\TypeTable
+     * @var \App\Model\Table\TypesTable
      */
-    protected $Type;
+    protected $Types;
 
     /**
      * Fixtures
@@ -25,8 +25,7 @@ class TypeTableTest extends TestCase
      * @var array
      */
     protected $fixtures = [
-        'app.Type',
-        'app.Items',
+        'app.Types',
     ];
 
     /**
@@ -37,8 +36,8 @@ class TypeTableTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('Type') ? [] : ['className' => TypeTable::class];
-        $this->Type = TableRegistry::getTableLocator()->get('Type', $config);
+        $config = TableRegistry::getTableLocator()->exists('Types') ? [] : ['className' => TypesTable::class];
+        $this->Types = TableRegistry::getTableLocator()->get('Types', $config);
     }
 
     /**
@@ -48,7 +47,7 @@ class TypeTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Type);
+        unset($this->Types);
 
         parent::tearDown();
     }

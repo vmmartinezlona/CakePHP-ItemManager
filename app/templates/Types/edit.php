@@ -10,14 +10,14 @@
             <h4 class="heading"><?= __('Actions') ?></h4>
             <?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $type->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $type->id), 'class' => 'side-nav-item']
+                ['action' => 'delete', $type->type_id],
+                ['confirm' => __('Are you sure you want to delete # {0}?', $type->type_id), 'class' => 'side-nav-item']
             ) ?>
-            <?= $this->Html->link(__('List Type'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('List Types'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
         </div>
     </aside>
     <div class="column-responsive column-80">
-        <div class="type form content">
+        <div class="types form content">
             <?= $this->Form->create($type) ?>
             <fieldset>
                 <legend><?= __('Edit Type') ?></legend>

@@ -6,16 +6,10 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * TypeFixture
+ * TypesFixture
  */
-class TypeFixture extends TestFixture
+class TypesFixture extends TestFixture
 {
-    /**
-     * Table name
-     *
-     * @var string
-     */
-    public $table = 'type';
     /**
      * Fields
      *
@@ -23,10 +17,10 @@ class TypeFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'type_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['type_id'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -43,7 +37,7 @@ class TypeFixture extends TestFixture
     {
         $this->records = [
             [
-                'id' => 1,
+                'type_id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
             ],
         ];

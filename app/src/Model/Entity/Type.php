@@ -8,10 +8,8 @@ use Cake\ORM\Entity;
 /**
  * Type Entity
  *
- * @property int $id
+ * @property int $type_id
  * @property string $name
- *
- * @property \App\Model\Entity\Item[] $items
  */
 class Type extends Entity
 {
@@ -26,6 +24,5 @@ class Type extends Entity
      */
     protected $_accessible = [
         'name' => true,
-        'items' => true,
     ];
 }

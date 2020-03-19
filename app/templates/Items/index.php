@@ -4,20 +4,13 @@
  * @var \App\Model\Entity\Item[]|\Cake\Collection\CollectionInterface $items
  */
 ?>
-
 <div class="items index content">
     <?= $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right']) ?>
     <h3><?= __('Items') ?></h3>
-
-    <div>
-      <input type="text" class="form-control" placeholder="Search an item...">
-    </div>
-
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
                     <th><?= $this->Paginator->sort('name') ?></th>
                     <th><?= $this->Paginator->sort('vendor_id') ?></th>
                     <th><?= $this->Paginator->sort('type_id') ?></th>
@@ -27,26 +20,25 @@
                     <th><?= $this->Paginator->sort('color') ?></th>
                     <th><?= $this->Paginator->sort('release_date') ?></th>
                     <th><?= $this->Paginator->sort('photo') ?></th>
-                    <th><?= $this->Paginator->sort('tags') ?></th>
                     <th><?= $this->Paginator->sort('created_date') ?></th>
+                    <th><?= $this->Paginator->sort('user_id') ?></th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($items as $item): ?>
                 <tr>
-                    <td><?= $this->Number->format($item->id) ?></td>
                     <td><?= h($item->name) ?></td>
-                    <td><?= $this->Number->format($item->vendor_id) ?></td>
-                    <td><?= $this->Number->format($item->type_id) ?></td>
+                    <td><?= $item->has('vendor') ? $this->Html->link($item->vendor->name, ['controller' => 'vendors', 'action' => 'view', $item->vendor->vendor_id]) : '' ?></td>
+                    <td><?= $item->has('type') ? $this->Html->link($item->type->name, ['controller' => 'types', 'action' => 'view', $item->type->type_id]) : '' ?></td>
                     <td><?= h($item->serial_number) ?></td>
                     <td><?= $this->Number->format($item->price) ?></td>
                     <td><?= $this->Number->format($item->weight) ?></td>
                     <td><?= h($item->color) ?></td>
                     <td><?= h($item->release_date) ?></td>
                     <td><?= h($item->photo) ?></td>
-                    <td><?= h($item->tags) ?></td>
                     <td><?= h($item->created_date) ?></td>
+                    <td><?= $this->Number->format($item->user_id) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $item->id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $item->id]) ?>

@@ -1,30 +1,30 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Type[]|\Cake\Collection\CollectionInterface $type
+ * @var \App\Model\Entity\Tag[]|\Cake\Collection\CollectionInterface $tags
  */
 ?>
-<div class="type index content">
-    <?= $this->Html->link(__('New Type'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Type') ?></h3>
+<div class="tags index content">
+    <?= $this->Html->link(__('New Tag'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <h3><?= __('Tags') ?></h3>
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
+                    <th><?= $this->Paginator->sort('tag_id') ?></th>
                     <th><?= $this->Paginator->sort('name') ?></th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($type as $type): ?>
+                <?php foreach ($tags as $tag): ?>
                 <tr>
-                    <td><?= $this->Number->format($type->id) ?></td>
-                    <td><?= h($type->name) ?></td>
+                    <td><?= $this->Number->format($tag->tag_id) ?></td>
+                    <td><?= h($tag->name) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $type->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $type->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $type->id], ['confirm' => __('Are you sure you want to delete # {0}?', $type->id)]) ?>
+                        <?= $this->Html->link(__('View'), ['action' => 'view', $tag->tag_id]) ?>
+                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $tag->tag_id]) ?>
+                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $tag->tag_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tag->tag_id)]) ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
