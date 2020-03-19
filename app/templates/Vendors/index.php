@@ -5,7 +5,10 @@
  */
 ?>
 <div class="vendors index content">
-    <?= $this->Html->link(__('New Vendor'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <?php if(!$isAdmin){
+        echo $this->Html->link(__('New Vendores'), ['action' => 'add'], ['class' => 'button float-right']);
+        } 
+    ?>
     <h3><?= __('Vendors') ?></h3>
     <div class="table-responsive">
         <table>

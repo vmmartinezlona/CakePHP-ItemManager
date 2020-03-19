@@ -20,10 +20,15 @@ class VendorsController extends AppController
     public function index()
     {
         $this->Authorization->skipAuthorization();
-
-        $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-        $vendors = $this->paginate($this->Vendors->find('all')->where(['Vendors.user_id =' => $user_id]));
-        $this->set(compact('vendors'));
+        if($this->isAdmin()) {
+            $this->set('isAdmin', true);
+            $vendors = $this->paginate($this->Vendors);
+        } else {    
+            $this->set('isAdmin', false);
+            $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            $vendors = $this->paginate($this->Vendors->find('all')->where(['Vendors.user_id =' => $user_id]));
+        }     
+        $this->set(compact('vendors'));   
     }
 
     /**
@@ -38,9 +43,7 @@ class VendorsController extends AppController
         $vendor = $this->Vendors->get($id, [
             'contain' => [],
         ]);
-
         $this->Authorization->authorize($vendor);
-
         $this->set('vendor', $vendor);
     }
 
@@ -52,6 +55,7 @@ class VendorsController extends AppController
     public function add()
     {
         $this->Authorization->skipAuthorization();
+        $this->authorizedFlow();
         $vendor = $this->Vendors->newEmptyEntity();
         if ($this->request->is('post')) {
             $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
@@ -104,6 +108,7 @@ class VendorsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $vendor = $this->Vendors->get($id);
+        $this->Authorization->authorize($vendor);
         if ($this->Vendors->delete($vendor)) {
             $this->Flash->success(__('The vendor has been deleted.'));
         } else {
@@ -111,5 +116,24 @@ class VendorsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function isAdmin() {
+        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+    }
+
+    public function redirectToRoot() {
+        return $this->redirect([
+            'controller' => 'vendors',
+            'action' => 'index'
+        ]);
+    }
+
+    public function authorizedFlow() {
+        if($this->isAdmin()){
+            $this->redirectToRoot();
+        } else {
+            return true;
+        }
     }
 }
