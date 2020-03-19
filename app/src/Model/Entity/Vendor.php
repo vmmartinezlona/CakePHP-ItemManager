@@ -8,11 +8,9 @@ use Cake\ORM\Entity;
 /**
  * Vendor Entity
  *
- * @property int $id
+ * @property int $vendor_id
  * @property string $name
  * @property string $logo
- *
- * @property \App\Model\Entity\Item[] $items
  */
 class Vendor extends Entity
 {
@@ -28,6 +26,5 @@ class Vendor extends Entity
     protected $_accessible = [
         'name' => true,
         'logo' => true,
-        'items' => true,
     ];
 }

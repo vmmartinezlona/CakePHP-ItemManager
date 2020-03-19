@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 /**
- * Vendor Controller
+ * Vendors Controller
  *
- * @property \App\Model\Table\VendorTable $Vendor
+ * @property \App\Model\Table\VendorsTable $Vendors
  *
  * @method \App\Model\Entity\Vendor[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class VendorController extends AppController
+class VendorsController extends AppController
 {
     /**
      * Index method
@@ -19,9 +19,11 @@ class VendorController extends AppController
      */
     public function index()
     {
-        $vendor = $this->paginate($this->Vendor);
+        $this->Authorization->skipAuthorization();
 
-        $this->set(compact('vendor'));
+        $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $vendors = $this->paginate($this->Vendors->find('all')->where(['Vendors.user_id =' => $user_id]));
+        $this->set(compact('vendors'));
     }
 
     /**
@@ -33,9 +35,11 @@ class VendorController extends AppController
      */
     public function view($id = null)
     {
-        $vendor = $this->Vendor->get($id, [
-            'contain' => ['Items'],
+        $vendor = $this->Vendors->get($id, [
+            'contain' => [],
         ]);
+
+        $this->Authorization->authorize($vendor);
 
         $this->set('vendor', $vendor);
     }
@@ -47,10 +51,12 @@ class VendorController extends AppController
      */
     public function add()
     {
-        $vendor = $this->Vendor->newEmptyEntity();
+        $this->Authorization->skipAuthorization();
+        $vendor = $this->Vendors->newEmptyEntity();
         if ($this->request->is('post')) {
-            $vendor = $this->Vendor->patchEntity($vendor, $this->request->getData());
-            if ($this->Vendor->save($vendor)) {
+            $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
+            $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            if ($this->Vendors->save($vendor)) {
                 $this->Flash->success(__('The vendor has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -69,12 +75,15 @@ class VendorController extends AppController
      */
     public function edit($id = null)
     {
-        $vendor = $this->Vendor->get($id, [
+        $vendor = $this->Vendors->get($id, [
             'contain' => [],
         ]);
+        $this->Authorization->authorize($vendor);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $vendor = $this->Vendor->patchEntity($vendor, $this->request->getData());
-            if ($this->Vendor->save($vendor)) {
+            $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData(), [
+                'accessibleFields' => ['user_id' => false]
+            ]);
+            if ($this->Vendors->save($vendor)) {
                 $this->Flash->success(__('The vendor has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -94,8 +103,8 @@ class VendorController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $vendor = $this->Vendor->get($id);
-        if ($this->Vendor->delete($vendor)) {
+        $vendor = $this->Vendors->get($id);
+        if ($this->Vendors->delete($vendor)) {
             $this->Flash->success(__('The vendor has been deleted.'));
         } else {
             $this->Flash->error(__('The vendor could not be deleted. Please, try again.'));
