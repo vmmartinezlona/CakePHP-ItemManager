@@ -27,7 +27,7 @@
                     echo $this->Form->control('email');
                     echo $this->Form->control('password');
                     echo $this->Form->control('is_active');
-                    echo $this->Form->control('create_date');
+                    echo $this->Form->control('isAdmin');
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

@@ -19,8 +19,9 @@ class UsersController extends AppController
      */
     public function index()
     {
+        $this->Authorization->skipAuthorization();        
+        $this->authorizedFlow();
         $users = $this->paginate($this->Users);
-
         $this->set(compact('users'));
     }
 
@@ -36,6 +37,7 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
+        $this->Authorization->authorize($user);
         $this->set('user', $user);
     }
 
@@ -47,6 +49,7 @@ class UsersController extends AppController
     public function add()
     {
         $user = $this->Users->newEmptyEntity();
+        $this->Authorization->authorize($user);
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
@@ -71,6 +74,7 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
+        $this->Authorization->authorize($user);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
@@ -94,6 +98,7 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
+        $this->Authorization->authorize($user);
         if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));
         } else {
@@ -114,15 +119,9 @@ class UsersController extends AppController
         $this->Authentication->userScope = array('user.isActive' => true);
     }
 
-    public function login() {
-
-
-
-        // $user = $this->Users->get($id, ['contain' => []]);
-        // dump($user);
-        // die();
-
-
+    public function login() 
+    {
+        $this->Authorization->skipAuthorization();
         $this->request->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
         // dump($result->data);
@@ -144,11 +143,32 @@ class UsersController extends AppController
 
     public function logout()
     {
+        $this->Authorization->skipAuthorization();
         $result = $this->Authentication->getResult();
         // regardless of POST or GET, redirect if user is logged in
         if ($result->isValid()) {
             $this->Authentication->logout();
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+    }
+
+
+    public function isAuthorized() {
+        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+    }
+
+    public function redirectToRoot() {
+        return $this->redirect([
+            'controller' => 'items',
+            'action' => 'index'
+        ]);
+    }
+
+    public function authorizedFlow() {
+        if($this->isAuthorized()){
+            return true;
+        } else {
+            $this->redirectToRoot();
         }
     }
 }

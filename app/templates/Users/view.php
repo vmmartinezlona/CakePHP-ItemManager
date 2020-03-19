@@ -26,14 +26,10 @@
                     <th><?= __('Email') ?></th>
                     <td><?= h($user->email) ?></td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th><?= __('Password') ?></th>
                     <td><?= h($user->password) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('User Id') ?></th>
-                    <td><?= $this->Number->format($user->user_id) ?></td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th><?= __('Create Date') ?></th>
                     <td><?= h($user->create_date) ?></td>
@@ -41,6 +37,10 @@
                 <tr>
                     <th><?= __('Is Active') ?></th>
                     <td><?= $user->is_active ? __('Yes') : __('No'); ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Is Admin') ?></th>
+                    <td><?= $user->isAdmin ? __('Yes') : __('No'); ?></td>
                 </tr>
             </table>
         </div>

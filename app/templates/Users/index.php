@@ -11,24 +11,21 @@
         <table>
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('user_id') ?></th>
                     <th><?= $this->Paginator->sort('username') ?></th>
                     <th><?= $this->Paginator->sort('email') ?></th>
-                    <!-- <th><?= $this->Paginator->sort('password') ?></th> -->
                     <th><?= $this->Paginator->sort('is_active') ?></th>
-                    <th><?= $this->Paginator->sort('create_date') ?></th>
+                    <th><?= $this->Paginator->sort('isAdmin') ?></th>
+
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($users as $user): ?>
                 <tr>
-                    <td><?= $this->Number->format($user->user_id) ?></td>
                     <td><?= h($user->username) ?></td>
                     <td><?= h($user->email) ?></td>
-                    <!-- <td><?= h($user->password) ?></td> -->
-                    <td><?= h($user->is_active) ?></td>
-                    <td><?= h($user->create_date) ?></td>
+                    <td><?= $user->is_active ? h('Yes') : h('No') ?></td>
+                    <td><?= $user->isAdmin ? h('Yes') : h('No') ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $user->user_id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->user_id]) ?>
