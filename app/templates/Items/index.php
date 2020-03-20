@@ -5,7 +5,10 @@
  */
 ?>
 <div class="items index content">
-    <?= $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <?php if(!$isAdmin){
+        echo $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right']);
+        } 
+    ?>
     <h3><?= __('Items') ?></h3>
     <div class="table-responsive">
         <table>
@@ -29,8 +32,8 @@
                 <?php foreach ($items as $item): ?>
                 <tr>
                     <td><?= h($item->name) ?></td>
-                    <td><?= $item->has('vendor') ? $this->Html->link($item->vendor->name, ['controller' => 'vendors', 'action' => 'view', $item->vendor->vendor_id]) : '' ?></td>
-                    <td><?= $item->has('type') ? $this->Html->link($item->type->name, ['controller' => 'types', 'action' => 'view', $item->type->type_id]) : '' ?></td>
+                    <td><?= $item->has('Vendors') ? $this->Html->link($item->Vendors['name'], ['controller' => 'vendors', 'action' => 'view', $item->Vendors['vendor_id']]) : 'N/A' ?></td>
+                    <td><?= $item->has('Types') ? $this->Html->link($item->Types['name'], ['controller' => 'types', 'action' => 'view', $item->Types['type_id']]) : 'N/A' ?></td>
                     <td><?= h($item->serial_number) ?></td>
                     <td><?= $this->Number->format($item->price) ?></td>
                     <td><?= $this->Number->format($item->weight) ?></td>

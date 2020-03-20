@@ -10,17 +10,18 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $name
- * @property int $vendor_id
- * @property int $type_id
+ * @property int|null $vendor_id
+ * @property int|null $type_id
  * @property string $serial_number
  * @property float $price
  * @property float $weight
  * @property string $color
- * @property \Cake\I18n\FrozenDate $release_date
+ * @property \Cake\I18n\FrozenTime|null $release_date
  * @property string $photo
- * @property string $tags
- * @property \Cake\I18n\FrozenDate $created_date
+ * @property \Cake\I18n\FrozenTime|null $created_date
+ * @property int $user_id
  *
+ * @property \App\Model\Entity\Tag $tag
  * @property \App\Model\Entity\Vendor $vendor
  * @property \App\Model\Entity\Type $type
  */
@@ -45,8 +46,9 @@ class Item extends Entity
         'color' => true,
         'release_date' => true,
         'photo' => true,
-        'tags' => true,
         'created_date' => true,
+        'user_id' => true,
+        'tag' => true,
         'vendor' => true,
         'type' => true,
     ];

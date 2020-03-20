@@ -13,7 +13,7 @@
     </aside>
     <div class="column-responsive column-80">
         <div class="items form content">
-            <?= $this->Form->create($item) ?>
+            <?= $this->Form->create($item, ['enctype'=>'multipart/form-data']) ?>
             <fieldset>
                 <legend><?= __('Add Item') ?></legend>
                 <?php
@@ -25,7 +25,7 @@
                     echo $this->Form->control('weight');
                     echo $this->Form->control('color');
                     echo $this->Form->control('release_date', ['empty' => true]);
-                    echo $this->Form->control('photo');
+                    echo $this->Form->control('file', ['type' => 'file']);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

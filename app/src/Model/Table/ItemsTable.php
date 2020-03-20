@@ -11,8 +11,7 @@ use Cake\Validation\Validator;
 /**
  * Items Model
  *
- * @property \App\Model\Table\VendorsTable&\Cake\ORM\Association\BelongsTo $Vendors
- * @property \App\Model\Table\TypesTable&\Cake\ORM\Association\BelongsTo $Types
+ * @property \App\Model\Table\TagsTable&\Cake\ORM\Association\BelongsToMany $Tags
  *
  * @method \App\Model\Entity\Item newEmptyEntity()
  * @method \App\Model\Entity\Item newEntity(array $data, array $options = [])
@@ -42,15 +41,24 @@ class ItemsTable extends Table
 
         $this->setTable('items');
         $this->setDisplayField('name');
-        $this->setPrimaryKey('item_id');
+        $this->setPrimaryKey('id');
 
-        $this->belongsTo('vendors', [
+        $this->belongsTo('Vendors', [
             'foreignKey' => 'vendor_id',
+        ]);
+        $this->belongsTo('Types', [
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+            'foreignKey' => 'type_id',
+        ]);
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('types', [
-            'foreignKey' => 'type_id',
-            'joinType' => 'INNER',
+        $this->belongsToMany('Tags', [
+            'foreignKey' => 'item_id',
+            'targetForeignKey' => 'tag_id',
+            'joinTable' => 'items_tags',
         ]);
     }
 
@@ -95,9 +103,8 @@ class ItemsTable extends Table
             ->notEmptyString('color');
 
         $validator
-            ->date('release_date')
-            ->requirePresence('release_date', 'create')
-            ->notEmptyDate('release_date');
+            ->dateTime('release_date')
+            ->allowEmptyDateTime('release_date');
 
         $validator
             ->scalar('photo')
@@ -106,15 +113,8 @@ class ItemsTable extends Table
             ->notEmptyString('photo');
 
         $validator
-            ->scalar('tags')
-            ->maxLength('tags', 500)
-            ->requirePresence('tags', 'create')
-            ->notEmptyString('tags');
-
-        $validator
-            ->date('created_date')
-            ->requirePresence('created_date', 'create')
-            ->notEmptyDate('created_date');
+            ->dateTime('created_date')
+            ->allowEmptyDateTime('created_date');
 
         return $validator;
     }
@@ -130,6 +130,7 @@ class ItemsTable extends Table
     {
         $rules->add($rules->existsIn(['vendor_id'], 'Vendors'));
         $rules->add($rules->existsIn(['type_id'], 'Types'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }

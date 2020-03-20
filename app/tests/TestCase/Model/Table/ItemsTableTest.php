@@ -26,6 +26,7 @@ class ItemsTableTest extends TestCase
      */
     protected $fixtures = [
         'app.Items',
+        'app.Tags',
         'app.Vendors',
         'app.Types',
     ];
@@ -80,6 +81,26 @@ class ItemsTableTest extends TestCase
      * @return void
      */
     public function testBuildRules(): void
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findTagged method
+     *
+     * @return void
+     */
+    public function testFindTagged(): void
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test beforeSave method
+     *
+     * @return void
+     */
+    public function testBeforeSave(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
