@@ -45,6 +45,12 @@ use Cake\Routing\RouteBuilder;
 /** @var \Cake\Routing\RouteBuilder $routes */
 $routes->setRouteClass(DashedRoute::class);
 
+$routes->scope('/items', ['controller' => 'Items'], function ($builder) {
+  $builder->connect('/tagged/*', ['controller' => 'Items', 'action' => 'tags']);
+  $builder->connect('/dashboard', ['controller' => 'Items', 'action' => 'dashboard']);
+  // $builder->connect('')
+});
+
 $routes->scope('/', function (RouteBuilder $builder) {
     // Register scoped middleware for in scopes.
     $builder->registerMiddleware('csrf', new CsrfProtectionMiddleware([
@@ -62,12 +68,13 @@ $routes->scope('/', function (RouteBuilder $builder) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, templates/Pages/home.php)...
      */
-    $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+    $builder->connect('/', ['controller' => 'Items', 'action' => 'index']);
 
     /*
      * ...and connect the rest of 'Pages' controller's URLs.
      */
     $builder->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
+
 
     /*
      * Connect catchall routes for all controllers.

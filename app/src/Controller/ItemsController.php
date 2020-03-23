@@ -229,11 +229,13 @@ class ItemsController extends AppController
     {
         if ($this->isAdmin()) {
             return $this->Items->find('all', [
+                'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,
                 'order' => 'Items.created_date DESC']);
         } else {
             $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
             return $this->Items->find('all', [
+                'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,
                 'order' => 'Items.created_date DESC'
                 ])->where(['Items.user_id =' => $user_id]);
