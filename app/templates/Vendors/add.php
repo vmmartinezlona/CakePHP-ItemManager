@@ -13,12 +13,12 @@
     </aside>
     <div class="column-responsive column-80">
         <div class="vendors form content">
-            <?= $this->Form->create($vendor) ?>
+            <?= $this->Form->create($vendor, ['enctype'=>'multipart/form-data']) ?>
             <fieldset>
                 <legend><?= __('Add Vendor') ?></legend>
                 <?php
                     echo $this->Form->control('name');
-                    echo $this->Form->control('logo');
+                    echo $this->Form->control('file', ['type' => 'file']);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

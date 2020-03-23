@@ -40,6 +40,11 @@ class VendorsTable extends Table
         $this->setTable('vendors');
         $this->setDisplayField('name');
         $this->setPrimaryKey('vendor_id');
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

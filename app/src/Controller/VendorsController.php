@@ -3,20 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-/**
- * Vendors Controller
- *
- * @property \App\Model\Table\VendorsTable $Vendors
- *
- * @method \App\Model\Entity\Vendor[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class VendorsController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
-     */
     public function index()
     {
         $this->Authorization->skipAuthorization();
@@ -31,52 +19,42 @@ class VendorsController extends AppController
         $this->set(compact('vendors'));   
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Vendor id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function view($id = null)
     {
-        $vendor = $this->Vendors->get($id, [
-            'contain' => [],
-        ]);
+        $vendor = $this->Vendors->get($id, ['contain' => []]);
         $this->Authorization->authorize($vendor);
         $this->set('vendor', $vendor);
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
     public function add()
     {
-        $this->Authorization->skipAuthorization();
-        $this->authorizedFlow();
+        // $this->Authorization->skipAuthorization();
+        // $this->authorizedFlow();
         $vendor = $this->Vendors->newEmptyEntity();
+        $this->Authorization->authorize($vendor);
         if ($this->request->is('post')) {
-            $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
-            $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-            if ($this->Vendors->save($vendor)) {
-                $this->Flash->success(__('The vendor has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The vendor could not be saved. Please, try again.'));
+            $this->saveVendor();
         }
         $this->set(compact('vendor'));
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Vendor id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    private function saveVendor()
+    {
+        $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
+        $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $filename = $this->uploadImage($this->request);
+        if($filename) {
+            $vendor->logo = $filename;
+            if ($this->Vendors->save($vendor)) {
+                $this->Flash->success(__('The vendor has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The vendor could not be saved. Please, try again.'));
+        } else {
+            $this->Flash->error(__('The vendor could not be saved. Please, try again.'));
+        }       
+    }
+
     public function edit($id = null)
     {
         $vendor = $this->Vendors->get($id, [
@@ -97,13 +75,6 @@ class VendorsController extends AppController
         $this->set(compact('vendor'));
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Vendor id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -135,5 +106,22 @@ class VendorsController extends AppController
         } else {
             return true;
         }
+    }
+
+    private function uploadImage($request) 
+    {
+        $file = $request->getData('file');
+        $ext =  substr(strtolower(strrchr($file->getClientMediaType(), '/')), 1);
+        $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
+        if (in_array($ext, $arr_ext)) {
+            $filename = $this->getRandomString() . '.' . $ext;
+            $file->moveTo(WWW_ROOT . 'img/uploads/vendors/' . $filename);
+            return $filename;
+        }
+        return false;
+    }
+
+    public function getRandomString() {
+        return substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', mt_rand(1,10))), 1, 10);
     }
 }

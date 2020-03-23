@@ -9,7 +9,14 @@
         echo $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right']);
         } 
     ?>
+    
     <h3><?= __('Items') ?></h3>
+
+    <div class="form-group">
+        <label>Search item</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search email...">
+    </div>
+
     <div class="table-responsive">
         <table>
             <thead>

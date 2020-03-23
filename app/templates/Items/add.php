@@ -25,6 +25,7 @@
                     echo $this->Form->control('weight');
                     echo $this->Form->control('color');
                     echo $this->Form->control('release_date', ['empty' => true]);
+                    echo $this->Form->control('tags._ids', ['options' => $tags, 'multiple' => 'multiple']);
                     echo $this->Form->control('file', ['type' => 'file']);
                 ?>
             </fieldset>

@@ -134,4 +134,28 @@ class ItemsTable extends Table
 
         return $rules;
     }
+
+    public function findTagged(Query $query, array $options)
+    {
+        $columns = [
+            'Items.id', 'Items.user_id', 'Items.name',
+            'Items.serial_number', 'Items.price', 'Items.created_date'
+        ];
+
+        $query = $query
+            ->select($columns)
+            ->distinct($columns);
+
+        if (empty($options['tags'])) {
+            // If there are no tags provided, find articles that have no tags.
+            $query->leftJoinWith('Tags')
+                ->where(['Tags.name IS' => null]);
+        } else {
+            // Find articles that have one or more of the provided tags.
+            $query->innerJoinWith('Tags')
+                ->where(['Tags.name IN' => $options['tags']]);
+        }
+
+        return $query->group(['Items.id']);
+    }
 }

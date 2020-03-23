@@ -15,7 +15,7 @@
             <thead>
                 <tr>
                     <th><?= $this->Paginator->sort('name') ?></th>
-                    <th><?= $this->Paginator->sort('logo') ?></th>
+                    <th>Logo</th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -23,7 +23,8 @@
                 <?php foreach ($vendors as $vendor): ?>
                 <tr>
                     <td><?= h($vendor->name) ?></td>
-                    <td><?= h($vendor->logo) ?></td>
+                    <!-- <td><?= h($vendor->logo) ?></td> -->
+                    <th><?= $this->Html->image('uploads/vendors/' . $vendor->logo, ['class' => 'index-images', 'escape' => false]) ?></th>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $vendor->vendor_id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $vendor->vendor_id]) ?>
