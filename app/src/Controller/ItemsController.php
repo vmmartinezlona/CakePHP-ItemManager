@@ -16,15 +16,83 @@ class ItemsController extends AppController
     {
         $this->Authorization->skipAuthorization();
         $this->paginate = ['contain' => ['Tags', 'vendors', 'types']];
+        
+        $newestItems = $this->getLastItems(3);
+        $itemsColors = $this->getColorList();
+        $items = $this->getIndexItems($this->request, $itemsColors);
+        $this->set(compact('items', 'newestItems', 'itemsColors'));
+    }
+
+    private function getColorList()
+    {
         if ($this->isAdmin()) {
-            $items = $this->paginate($this->Items);
+            $query = $this->Items->find('all', ['fields' => ['Items.color']]);
         } else {
             $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-            $items = $this->paginate($this->Items->find('all')->where(['Items.user_id =' => $user_id]));
+            $query = $this->Items->find('all', ['fields' => ['Items.color']])->where(['Items.user_id =' => $user_id]);
         }
-        dump($items);
-        $this->set(compact('items'));
+        $colors = ['All'];
+        foreach($query->distinct()->toArray() as $key => $value) {
+            array_push($colors, $value->color);
+        }
+        return $colors;
     }
+
+    private function getIndexItems($request, $itemsColors) 
+    {
+        $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $searchString = $this->builSearchString($request, $itemsColors);
+        if ($searchString) {
+            if ($this->isAdmin()) {
+                $items = $this->paginate($this->Items->find('all', ['conditions' => $searchString]));
+            } else {
+                $items = $this->paginate($this->Items->find('all', ['conditions' => $searchString])
+                    ->where(['Items.user_id =' => $user_id]));
+            }
+        } else {
+            if ($this->isAdmin()) {
+                $items = $this->paginate($this->Items->find('all'));
+            } else {
+                $items = $this->paginate($this->Items->find('all')
+                    ->where(['Items.user_id =' => $user_id]));
+            }
+        }
+        return $items;
+    }
+
+    private function builSearchString($request, $itemsColors) 
+    {
+        if ($request->getData('clear')) {
+            $this->clearForm();
+            return false;
+        }
+        $this->fillForm($request);
+        $conditions = [];
+        if ($request->getData('searchName')) {
+            $conditions['Items.name LIKE'] = '%' . $request->getData('searchName') . '%';
+        }
+        if ($request->getData('searchPrice')) {
+            $conditions['Items.price ='] = $request->getData('searchPrice');
+        }
+        if ($request->getData('searchColor') != 0 ) {
+            $conditions['Items.color ='] = $itemsColors[$request->getData('searchColor')];
+        }
+        return $conditions;
+    }
+
+    private function fillForm($request) {
+        $this->set('searchName', $request->getData('searchName'));
+        $this->set('searchPrice', $request->getData('searchPrice'));
+        $this->set('searchColor', $request->getData('searchColor'));
+    }
+
+    private function clearForm() {
+        $this->set('searchName', '');
+        $this->set('searchPrice', '');
+        $this->set('searchColor', 0);
+    }
+
+    
 
     public function view($id = null)
     {
@@ -35,28 +103,23 @@ class ItemsController extends AppController
         $this->set('item', $item);
     }
 
+
     public function add()
     {
         $item = $this->Items->newEmptyEntity();
         $this->Authorization->authorize($item);
         $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-
         if ($this->request->is('post')) {
-            $this->saveItem();
+            $this->saveItem($item);
         }
-
-        $item->user_id = $user_id;
         $tags = $this->Items->Tags->find('list', ['limit' => 200]);
         $vendors = $this->Items->vendors->find('list', ['limit' => 200])->where(['Vendors.user_id =' => $user_id]);
         $types = $this->Items->types->find('list', ['limit' => 200]);
 
-        // Set tags to the view context
-        // $this->set('tags', $tags);
         $this->set(compact('item', 'tags', 'vendors', 'types'));
-        $this->set(compact('item', 'vendors', 'types'));
     }
 
-    public function saveItem() {
+    private function saveItem($item) {
         $item = $this->Items->patchEntity($item, $this->request->getData());
         $item->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
         $filename = $this->uploadImage($this->request);
@@ -95,6 +158,7 @@ class ItemsController extends AppController
         $this->set(compact('item', 'tags', 'vendors', 'types'));
     }
 
+
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -109,15 +173,16 @@ class ItemsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+
     public function tags(...$tags)
     {
         $this->Authorization->skipAuthorization();
         $items = $this->Items->find('tagged', [
             'tags' => $tags
         ]);
-
         $this->set(compact('items', 'tags'));
     }
+
 
     public function dashboard() 
     {
@@ -130,19 +195,20 @@ class ItemsController extends AppController
         $this->set('lastItems', $this->getLastItems(3));
     }
 
-    public function getItemsCount($items) 
+
+    private function getItemsCount($items) 
     {
         return $items->count();
     }
 
-    public function getItemsAveragePrice($items, $count)
+    private function getItemsAveragePrice($items, $count)
     {
         $res = $items->select(['total_sum' =>$items->func()->sum('price')])->first();
         $total = $res->total_sum;
         return $total / $count;
     }
 
-    public function getTypePercentages($count)
+    private function getTypePercentages($count)
     {
         $types = $this->Items->Types->find('all', ['recursive'=>-1]);
         foreach ($types as $key=>$type) {
@@ -154,48 +220,30 @@ class ItemsController extends AppController
         return $result;
     }
 
-    public function getPercentage($count, $total)
+    private function getPercentage($count, $total)
     {
         return $count * 100 / $total;
     }
 
-    public function getLastItems($limit)
+    private function getLastItems($limit)
     {
-        return $this->Items->find('all', [
-            'limit' => $limit,
-            'order' => 'Items.created_date DESC'
-        ]);
+        if ($this->isAdmin()) {
+            return $this->Items->find('all', [
+                'limit' => $limit,
+                'order' => 'Items.created_date DESC']);
+        } else {
+            $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            return $this->Items->find('all', [
+                'limit' => $limit,
+                'order' => 'Items.created_date DESC'
+                ])->where(['Items.user_id =' => $user_id]);
+        }
     }
 
-
-
-
-    public function getItems() {
-        $item = $this->Items->get($id, [
-            'contain' => ['Tags', 'vendors', 'types']
-        ]);
-    }
-
-
-    public function isAdmin() {
+    private function isAdmin() {
         $isAdmin = $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
         $this->set('isAdmin', $isAdmin);
         return $isAdmin;
-    }
-
-    public function redirectToRoot() {
-        return $this->redirect([
-            'controller' => 'vendors',
-            'action' => 'index'
-        ]);
-    }
-
-    public function authorizedFlow() {
-        if($this->isAdmin()){
-            $this->redirectToRoot();
-        } else {
-            return true;
-        }
     }
 
     private function uploadImage($request) 
