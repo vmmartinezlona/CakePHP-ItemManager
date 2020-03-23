@@ -12,6 +12,16 @@ namespace App\Controller;
  */
 class UsersController extends AppController
 {
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        // Configure the login action to not require authentication, preventing
+        // the infinite redirect loop issue
+        $this->Authentication->addUnauthenticatedActions(['login', 'add']);
+        $this->Authentication->addUnauthenticatedActions(['login']);
+
+        $this->Authentication->userScope = array('user.isActive' => true);
+    }
     /**
      * Index method
      *
@@ -19,10 +29,31 @@ class UsersController extends AppController
      */
     public function index()
     {
-        $this->Authorization->skipAuthorization();        
+        $this->Authorization->skipAuthorization();   
         $this->authorizedFlow();
+        
+        if($this->request->getQuery('user_id')) {
+            $user_id = $this->request->getQuery('user_id');
+            $action = $this->request->getQuery('action');
+            if($this->changeStatus($user_id, $action)) {
+                $this->Flash->success(__('The user has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+        
         $users = $this->paginate($this->Users);
         $this->set(compact('users'));
+    }
+
+    public function changeStatus($user_id, $action) {
+        $user = $this->Users->get($user_id, ['contain' => []]);
+        if($action == 'active') {
+            $user->is_active = !$user->is_active; 
+        } else {
+            $user->isAdmin = !$user->isAdmin; 
+        }
+        return $this->Users->save($user);
     }
 
     /**
@@ -56,7 +87,6 @@ class UsersController extends AppController
                 $this->Flash->success(__('The user has been saved.'));
                 return $this->redirect(['action' => 'index']);
             }
-            print_r($user->getErrors());
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
         $this->set(compact('user'));
@@ -108,16 +138,7 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function beforeFilter(\Cake\Event\EventInterface $event)
-    {
-        parent::beforeFilter($event);
-        // Configure the login action to not require authentication, preventing
-        // the infinite redirect loop issue
-        $this->Authentication->addUnauthenticatedActions(['login', 'add']);
-        $this->Authentication->addUnauthenticatedActions(['login']);
-
-        $this->Authentication->userScope = array('user.isActive' => true);
-    }
+    
 
     public function login() 
     {

@@ -33,12 +33,12 @@ class VendorsController extends AppController
         $vendor = $this->Vendors->newEmptyEntity();
         $this->Authorization->authorize($vendor);
         if ($this->request->is('post')) {
-            $this->saveVendor();
+            $this->saveVendor($vendor);
         }
         $this->set(compact('vendor'));
     }
 
-    private function saveVendor()
+    private function saveVendor($vendor)
     {
         $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
         $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;

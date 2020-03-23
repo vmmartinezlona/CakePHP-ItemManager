@@ -162,6 +162,7 @@ TransportFactory::setConfig(Configure::consume('EmailTransport'));
 Mailer::setConfig(Configure::consume('Email'));
 Log::setConfig(Configure::consume('Log'));
 Security::setSalt(Configure::consume('Security.salt'));
+// Plugin::load('Migrations');
 
 /*
  * Setup detectors for mobile and tablet.

@@ -202,3 +202,8 @@ th {
     width: 30%;
     display: inline-block;
 }
+
+.yes-btn {
+    background: #28a745;
+    border: 1px solid #28a745;
+}

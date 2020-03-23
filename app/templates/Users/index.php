@@ -4,6 +4,12 @@
  * @var \App\Model\Entity\User[]|\Cake\Collection\CollectionInterface $users
  */
 ?>
+<!-- <?= $this->Html->script('jquery.min.js') ?>
+ -->
+ <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
 <div class="users index content">
     <?= $this->Html->link(__('New User'), ['action' => 'add'], ['class' => 'button float-right']) ?>
     <h3><?= __('Users') ?></h3>
@@ -24,8 +30,16 @@
                 <tr>
                     <td><?= h($user->username) ?></td>
                     <td><?= h($user->email) ?></td>
-                    <td><?= $user->is_active ? h('Yes') : h('No') ?></td>
-                    <td><?= $user->isAdmin ? h('Yes') : h('No') ?></td>
+                    <td><?= $user->is_active ? 
+                        $this->Form->button('Yes', [
+                            'class' => 'yes-btn ', 
+                            'onclick' => 'changeUserStatus(' . $user->user_id . ', "active")']) : 
+                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->user_id . ', "active")']) ?></td>
+                    <td><?= $user->isAdmin ? 
+                        $this->Form->button('Yes', [
+                            'class' => 'yes-btn',
+                            'onclick' => 'changeUserStatus(' . $user->user_id . ', "admin")']) : 
+                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->user_id . ', "admin")']) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $user->user_id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->user_id]) ?>
@@ -47,3 +61,20 @@
         <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
     </div>
 </div>
+
+<script>
+
+    function changeUserStatus(userId, action) {
+        var targetUrl =  '<?= $this->Url->build('/users/index', []) ?>';
+        $.ajax({
+            url: targetUrl,
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            data: { "user_id": userId, "action": action},
+            success: function(data){
+                console.log('success');
+                // location.reload();
+            }
+        });
+    }  
+</script>

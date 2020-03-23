@@ -43,10 +43,15 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <a href="/"><span>Cake</span>PHP</a>
         </div>
         <div class="top-nav-links">
-            <a target="_blank" href="https://book.cakephp.org/4/">Documentation</a>
-            <a target="_blank" href="https://api.cakephp.org/4/">API</a>
+            <a target="_blank" href="/users">Manage Users</a>
+            <a target="_blank" href="/items/dashboard">Items Dashboard</a>
+            <a target="_blank" href="/items">Items</a>
+            <a target="_blank" href="/vendors">Vendors</a>
+            <a target="_blank" href="/types">Types</a>
+            <a target="_blank" href="/users/logout">Logout</a>
         </div>
     </nav>
+
     <main class="main">
         <div class="container">
             <?= $this->Flash->render() ?>
