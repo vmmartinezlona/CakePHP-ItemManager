@@ -14,36 +14,38 @@ class Initial extends AbstractMigration
      */
     public function change()
     {
-      $items = $this->table('items');
-      $items
-        ->addColumn('name', 'string', ['limit' => 255])
-        ->addColumn('vendor_id', 'integer', ['limit' => 11])
-        ->addColumn('type_id', 'integer', ['limit' => 11])
-        ->addColumn('serial_number', 'string', ['limit' => 10, 'unique' => true])
-        ->addColumn('price', 'float')
-        ->addColumn('weight', 'float')
-        ->addColumn('color', 'string', ['limit' => 255])
-        ->addColumn('release_date', 'datetime', ['null' => true])
-        ->addColumn('photo', 'string', ['limit' => 500])
-        ->addColumn('created_date', 'datetime', ['null' => true])
-        ->addColumn('release_date', 'datetime', ['null' => true])
-        ->addColumn('user_id', 'integer', ['limit' => 11])
-        ->create();
-
         $items_tags = $this->table('items_tags');
         $items_tags
           ->addColumn('item_id', 'integer', ['limit' => 11])
-          ->addColumn('tags_id', 'integer', ['limit' => 11])
+          ->addColumn('tag_id', 'integer', ['limit' => 11])
           ->create();
         
-        $tags = $this->table('tags');
+        $tags = $this->table('tags',  ['id' => 'tag_id']);
         $tags
-          ->addColum('name', 'string', ['limit' => 255])
+          ->addColumn('name', 'string', ['limit' => 255])
           ->create();
 
-        $types = $this->table('types');
+        $types = $this->table('types', ['id' => 'type_id']);
         $types
-          ->addColum('name', 'string', ['limit' => 255])
+          ->addColumn('name', 'string', ['limit' => 255])
+          ->create();
+
+        $items = $this->table('items');
+        $items
+          ->addColumn('name', 'string', ['limit' => 255])
+          ->addColumn('vendor_id', 'integer', ['limit' => 11])
+          ->addColumn('type_id', 'integer', ['limit' => 11])
+          ->addColumn('serial_number', 'string', ['limit' => 10])
+          ->addColumn('price', 'float')
+          ->addColumn('weight', 'float')
+          ->addColumn('color', 'string', ['limit' => 255])
+          ->addColumn('release_date', 'datetime', ['null' => true])
+          ->addColumn('photo', 'string', ['limit' => 500])
+          ->addColumn('created_date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
+          ->addColumn('user_id', 'integer', ['limit' => 11])
+          ->addIndex(['serial_number'], ['unique' => true])
+          ->addForeignKey('type_id', 'types', 'type_id', ['delete' => 'CASCADE', 'update'=> 'NO_ACTION'])
+          // ->addForeignKey('type_id', 'types', 'type_id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
           ->create();
 
         $users = $this->table('users');
@@ -53,14 +55,30 @@ class Initial extends AbstractMigration
           ->addColumn('password', 'string', ['limit' => 255])
           ->addColumn('isActive', 'integer', ['default' => 0])
           ->addColumn('is_admin', 'integer', ['default' => 0])
-          ->addColumn('created_date', 'datetime', ['null' => true])
+          ->addColumn('created_date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
           ->create();
 
         $vendors = $this->table('vendors');
         $vendors
-          ->addColum('name', 'string', ['limit' => 255])
-          ->addColum('logo', 'string', ['limit' => 500])
+          ->addColumn('name', 'string', ['limit' => 255])
+          ->addColumn('logo', 'string', ['limit' => 500])
           ->addColumn('user_id', 'integer', ['limit' => 11])
           ->create();     
+    }
+
+    /**
+    * Migrate Up.
+    */
+    public function up()
+    {
+          
+    }
+
+    /**
+    * Migrate Down.
+    */
+    public function down()
+    {
+        $this->execute('Delete from status where id = ' . $this->statusId);
     }
 }

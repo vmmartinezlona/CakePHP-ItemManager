@@ -16,9 +16,15 @@ class ItemsController extends AppController
     {
         $this->Authorization->skipAuthorization();
         $this->paginate = ['contain' => ['Tags', 'vendors', 'types']];
-        
+
+        dump('$newestItems');
         $newestItems = $this->getLastItems(3);
+
+        dump($newestItems);
         $itemsColors = $this->getColorList();
+
+        dump($itemsColors);
+
         $items = $this->getIndexItems($this->request, $itemsColors);
         $this->set(compact('items', 'newestItems', 'itemsColors'));
     }
@@ -100,7 +106,8 @@ class ItemsController extends AppController
             'contain' => ['Tags', 'vendors', 'types'],
         ]);
         $this->Authorization->authorize($item);
-        $this->set('item', $item);
+        $this->set(compact('item'));
+
     }
 
 
@@ -227,13 +234,21 @@ class ItemsController extends AppController
 
     private function getLastItems($limit)
     {
+        dump('getLastItems');
+        
         if ($this->isAdmin()) {
+            dump('admin');
+            die();
             return $this->Items->find('all', [
                 'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,
                 'order' => 'Items.created_date DESC']);
         } else {
+            dump('No admin');
+            dump($this->request);
             $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            dump($user_id);
+            die();
             return $this->Items->find('all', [
                 'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,

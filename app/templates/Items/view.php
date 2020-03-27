@@ -24,11 +24,11 @@
                 </tr>
                 <tr>
                     <th><?= __('Vendor') ?></th>
-                    <td><?= $item->has('vendor') ? $this->Html->link($item->vendor->name, ['controller' => 'vendors', 'action' => 'view', $item->vendor->vendor_id]) : '' ?></td>
+                    <td><?= $item->has('Vendors') ? $this->Html->link($item->Vendors['name'], ['controller' => 'vendors', 'action' => 'view', $item->Vendors['vendor_id']]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Type') ?></th>
-                    <td><?= $item->has('type') ? $this->Html->link($item->type->name, ['controller' => 'types', 'action' => 'view', $item->type->type_id]) : '' ?></td>
+                    <td><?= $item->has('Types') ? $this->Html->link($item->Types['name'], ['controller' => 'types', 'action' => 'view', $item->Types['type_id']]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Serial Number') ?></th>

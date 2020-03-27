@@ -35,8 +35,7 @@
         ?>
         
         <h3><?= __('Items') ?></h3>
-
-        <?php echo $this->Form->create($item, ['url' => ['action' => 'index']]); ?>
+        <?php echo $this->Form->create($items, ['url' => ['action' => 'index']]); ?>
             <div class="search-form-column">
                 <?= $this->Form->control('searchName', ['value' => $searchName]) ?>
             </div>

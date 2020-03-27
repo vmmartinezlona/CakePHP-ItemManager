@@ -38,6 +38,8 @@ class ItemPolicy
 
     protected function isAuthorized(IdentityInterface $user, Item $item)
     {
-        return ($vendors->user_id === $user_id) || $this->isAdmin($user);
+        $user_id = $user->getOriginalData()->user_id;
+
+        return ($item->user_id === $user_id) || $this->isAdmin($user);
     }
 }
