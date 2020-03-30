@@ -13,7 +13,8 @@ class VendorsController extends AppController
             $vendors = $this->paginate($this->Vendors);
         } else {    
             $this->set('isAdmin', false);
-            $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            $user_id = $_SESSION['Auth']['id'];
             $vendors = $this->paginate($this->Vendors->find('all')->where(['Vendors.user_id =' => $user_id]));
         }     
         $this->set(compact('vendors'));   
@@ -41,7 +42,8 @@ class VendorsController extends AppController
     private function saveVendor($vendor)
     {
         $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
-        $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        // $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $vendor->user_id = $_SESSION['Auth']['id'];
         $filename = $this->uploadImage($this->request);
         if($filename) {
             $vendor->logo = $filename;

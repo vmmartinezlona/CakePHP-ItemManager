@@ -47,8 +47,6 @@ class ItemsTable extends Table
             'foreignKey' => 'vendor_id',
         ]);
         $this->belongsTo('Types', [
-            'dependent' => true,
-            'cascadeCallbacks' => true,
             'foreignKey' => 'type_id',
         ]);
         $this->belongsTo('Users', [

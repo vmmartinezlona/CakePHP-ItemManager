@@ -145,8 +145,7 @@ class UsersController extends AppController
         $this->Authorization->skipAuthorization();
         $this->request->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
-        dump($result);
-        // dump($result->data);
+        // dump($result->isValid());
         // regardless of POST or GET, redirect if user is logged in
         if ($result->isValid()) {
             // redirect to /articles after login success

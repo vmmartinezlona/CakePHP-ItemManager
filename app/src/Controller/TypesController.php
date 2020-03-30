@@ -34,11 +34,10 @@ class TypesController extends AppController
      */
     public function view($id = null)
     {
-        $this->Authorization->skipAuthorization();
-        $this->authorizedFlow();
-        $type = $this->Types->get($id, [
-            'contain' => [],
-        ]);
+        // $this->Authorization->skipAuthorization();
+        // $this->authorizedFlow();
+        $type = $this->Types->get($id, ['contain' => []]);
+        $this->Authorization->authorize($type);
         $this->set('type', $type);
     }
 
@@ -49,18 +48,31 @@ class TypesController extends AppController
      */
     public function add()
     {
-        $this->Authorization->skipAuthorization();
-        $this->authorizedFlow();
-        $type = $this->Types->newEmptyEntity();
+        // $this->Authorization->skipAuthorization();
+        // $this->authorizedFlow();
+        $type = $this->Types->newEmptyEntity();$this->Authorization->authorize($type);
+        $this->Authorization->authorize($type);
+        dump($this->request->getData());
+        
         if ($this->request->is('post')) {
             $type = $this->Types->patchEntity($type, $this->request->getData());
+            dump('llegamos aqui');  
+            dump($this->Types->save($type));
+            die();          
+
             if ($this->Types->save($type)) {
+                dump('lo guardamos');
+                die();
                 $this->Flash->success(__('The type has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
+            dump('no lo logramos');
+            die();
             $this->Flash->error(__('The type could not be saved. Please, try again.'));
         }
+        dump('No era guardar');
+        // die();
         $this->set(compact('type'));
     }
 
@@ -114,7 +126,7 @@ class TypesController extends AppController
 
 
     public function isAuthorized() {
-        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+        return $_SESSION['Auth']['is_admin'];
     }
 
     public function redirectToRoot() {

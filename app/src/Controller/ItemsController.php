@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+
 /**
  * Items Controller
  *
@@ -17,13 +18,12 @@ class ItemsController extends AppController
         $this->Authorization->skipAuthorization();
         $this->paginate = ['contain' => ['Tags', 'vendors', 'types']];
 
-        dump('$newestItems');
+        // dump($this->Authentication);
+        // dump(CakeSession::read('Auth.User.id'));
+        // dump( $_SESSION['Auth']['id']);
+
         $newestItems = $this->getLastItems(3);
-
-        dump($newestItems);
         $itemsColors = $this->getColorList();
-
-        dump($itemsColors);
 
         $items = $this->getIndexItems($this->request, $itemsColors);
         $this->set(compact('items', 'newestItems', 'itemsColors'));
@@ -34,7 +34,8 @@ class ItemsController extends AppController
         if ($this->isAdmin()) {
             $query = $this->Items->find('all', ['fields' => ['Items.color']]);
         } else {
-            $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            $user_id = $_SESSION['Auth']['id'];
             $query = $this->Items->find('all', ['fields' => ['Items.color']])->where(['Items.user_id =' => $user_id]);
         }
         $colors = ['All'];
@@ -46,7 +47,8 @@ class ItemsController extends AppController
 
     private function getIndexItems($request, $itemsColors) 
     {
-        $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $user_id = $_SESSION['Auth']['id'];
         $searchString = $this->builSearchString($request, $itemsColors);
         if ($searchString) {
             if ($this->isAdmin()) {
@@ -115,7 +117,8 @@ class ItemsController extends AppController
     {
         $item = $this->Items->newEmptyEntity();
         $this->Authorization->authorize($item);
-        $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $user_id = $_SESSION['Auth']['id'];
         if ($this->request->is('post')) {
             $this->saveItem($item);
         }
@@ -128,7 +131,8 @@ class ItemsController extends AppController
 
     private function saveItem($item) {
         $item = $this->Items->patchEntity($item, $this->request->getData());
-        $item->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        // $item->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+        $user_id = $_SESSION['Auth']['id'];
         $filename = $this->uploadImage($this->request);
         if ($filename) {
             $item->photo = $filename;
@@ -210,21 +214,27 @@ class ItemsController extends AppController
 
     private function getItemsAveragePrice($items, $count)
     {
-        $res = $items->select(['total_sum' =>$items->func()->sum('price')])->first();
-        $total = $res->total_sum;
-        return $total / $count;
+        if ($count > 0) {
+            $res = $items->select(['total_sum' =>$items->func()->sum('price')])->first();
+            $total = $res->total_sum;
+            return $total / $count;
+        }
+        return 0;
     }
 
     private function getTypePercentages($count)
     {
-        $types = $this->Items->Types->find('all', ['recursive'=>-1]);
-        foreach ($types as $key=>$type) {
-            $query = $this->Items->find('all', [
-                'conditions' => ['type_id =' => $type['type_id']]]
-            );
-            $result[$type['name']] = $this->getPercentage($query->count(), $count);
+        if ($count > 0) {
+            $types = $this->Items->Types->find('all', ['recursive'=>-1]);
+            foreach ($types as $key=>$type) {
+                $query = $this->Items->find('all', [
+                    'conditions' => ['type_id =' => $type['type_id']]]
+                );
+                $result[$type['name']] = $this->getPercentage($query->count(), $count);
+            }
+            return $result;
         }
-        return $result;
+        return 0;        
     }
 
     private function getPercentage($count, $total)
@@ -234,21 +244,16 @@ class ItemsController extends AppController
 
     private function getLastItems($limit)
     {
-        dump('getLastItems');
-        
         if ($this->isAdmin()) {
-            dump('admin');
-            die();
             return $this->Items->find('all', [
                 'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,
                 'order' => 'Items.created_date DESC']);
         } else {
-            dump('No admin');
-            dump($this->request);
-            $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-            dump($user_id);
-            die();
+            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
+            $user_id = $_SESSION['Auth']['id'];
+            // dump($user_id);
+            
             return $this->Items->find('all', [
                 'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,

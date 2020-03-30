@@ -25,12 +25,14 @@
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($itemsPercent as $key => $value): ?>
-            <tr>
-                <td><?= h($key) ?></td>
-                <th><?= $this->Number->toPercentage($value);?></th>
-            </tr>
-        <?php endforeach; ?>
+        <?php if (!empty($itemsPercent)) : ?>
+            <?php foreach ($itemsPercent as $key => $value): ?>
+                <tr>
+                    <td><?= h($key) ?></td>
+                    <th><?= $this->Number->toPercentage($value);?></th>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
         </tbody>
     </table>
 </div>

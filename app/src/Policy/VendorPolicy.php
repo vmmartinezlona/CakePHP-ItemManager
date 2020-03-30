@@ -33,12 +33,13 @@ class VendorPolicy
 
 
     protected function isAdmin(IdentityInterface $user) {
-        return $user->getOriginalData()->isAdmin;
+        return $user->getOriginalData()->is_admin;
     }
 
-    protected function isAuthorized(IdentityInterface $user, Vendor $vendors)
+    protected function isAuthorized(IdentityInterface $user, Vendor $vendor)
     {
-        $isAdmin = $user->getOriginalData()->isAdmin;
-        return ($vendors->user_id === $user_id) || $this->isAdmin($user);
+        $isAdmin = $user->getOriginalData()->is_admin;
+        $user_id = $user->getIdentifier();
+        return ($vendor->user_id === $user_id) || $this->isAdmin($user);
     }
 }

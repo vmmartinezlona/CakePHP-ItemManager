@@ -43,8 +43,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <a href="/"><span>Cake</span>PHP</a>
         </div>
         <div class="top-nav-links">
-            <a target="_blank" href="/users">Manage Users</a>
-            <a target="_blank" href="/items/dashboard">Items Dashboard</a>
+            <?php if ($_SESSION['Auth']['is_admin']): ?>
+                <a target="_blank" href="/users">Manage Users</a>
+                <a target="_blank" href="/items/dashboard">Items Dashboard</a>
+            <?php endif; ?>
             <a target="_blank" href="/items">Items</a>
             <a target="_blank" href="/vendors">Vendors</a>
             <a target="_blank" href="/types">Types</a>

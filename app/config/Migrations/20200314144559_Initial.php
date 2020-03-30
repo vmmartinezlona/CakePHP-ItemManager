@@ -45,7 +45,6 @@ class Initial extends AbstractMigration
           ->addColumn('user_id', 'integer', ['limit' => 11])
           ->addIndex(['serial_number'], ['unique' => true])
           ->addForeignKey('type_id', 'types', 'type_id', ['delete' => 'CASCADE', 'update'=> 'NO_ACTION'])
-          // ->addForeignKey('type_id', 'types', 'type_id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
           ->create();
 
         $users = $this->table('users');
@@ -58,7 +57,7 @@ class Initial extends AbstractMigration
           ->addColumn('created_date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
           ->create();
 
-        $vendors = $this->table('vendors');
+        $vendors = $this->table('vendors', ['id' => 'vendor_id']);
         $vendors
           ->addColumn('name', 'string', ['limit' => 255])
           ->addColumn('logo', 'string', ['limit' => 500])

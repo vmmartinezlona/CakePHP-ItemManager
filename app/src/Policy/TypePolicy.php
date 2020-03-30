@@ -3,30 +3,30 @@ declare(strict_types=1);
 
 namespace App\Policy;
 
-use App\Model\Entity\Item;
+use App\Model\Entity\Type;
 use Authorization\IdentityInterface;
 
 /**
- * Item policy
+ * Type policy
  */
-class ItemPolicy
+class TypePolicy
 {
-    public function canAdd(IdentityInterface $user, Item $item)
+    public function canAdd(IdentityInterface $user, Type $item)
     {
-        return !$this->isAdmin($user);
+        return $this->isAdmin($user) ? true : false;
     }
 
-    public function canEdit(IdentityInterface $user, Item $item)
-    {
-        return $this->isAuthorized($user, $item);
-    }
-
-    public function canDelete(IdentityInterface $user, Item $item)
+    public function canEdit(IdentityInterface $user, Type $item)
     {
         return $this->isAuthorized($user, $item);
     }
 
-    public function canView(IdentityInterface $user, Item $item)
+    public function canDelete(IdentityInterface $user, Type $item)
+    {
+        return $this->isAuthorized($user, $item);
+    }
+
+    public function canView(IdentityInterface $user, Type $item)
     {
         return $this->isAuthorized($user, $item);
     }
@@ -36,7 +36,7 @@ class ItemPolicy
         return $user->getOriginalData()->is_admin;
     }
 
-    protected function isAuthorized(IdentityInterface $user, Item $item)
+    protected function isAuthorized(IdentityInterface $user, Type $item)
     {
         $user_id = $user->getOriginalData()->user_id;
         return ($item->user_id === $user_id) || $this->isAdmin($user);
