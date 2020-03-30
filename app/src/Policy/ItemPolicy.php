@@ -33,12 +33,13 @@ class ItemPolicy
 
 
     protected function isAdmin(IdentityInterface $user) {
-        return $user->getOriginalData()->is_admin;
+        return $_SESSION['Auth']['is_admin'];
+        
     }
 
     protected function isAuthorized(IdentityInterface $user, Item $item)
     {
-        $user_id = $user->getOriginalData()->user_id;
+        $user_id = $_SESSION['Auth']['id'];
         return ($item->user_id === $user_id) || $this->isAdmin($user);
     }
 }

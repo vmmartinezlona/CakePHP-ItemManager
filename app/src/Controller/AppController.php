@@ -53,12 +53,4 @@ class AppController extends Controller
          */
         //$this->loadComponent('FormProtection');
     }
-
-    // public function beforeRender(Event $event)
-    // {
-    //     // parent::beforeFilter($event);
-    //     dump($this->request->getAttribute('identity')->getOriginalData()->isAdmin);
-    //     die();
-    //     // $this->set('userInfo', $this->Auth->user())
-    // }
 }

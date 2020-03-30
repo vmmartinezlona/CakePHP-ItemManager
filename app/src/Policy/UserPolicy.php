@@ -32,6 +32,6 @@ class UserPolicy
 
     protected function isAuthorized(IdentityInterface $user)
     {
-        return $user->getOriginalData()->is_admin;
+        return $_SESSION['Auth']['is_admin']; ? true : false;
     }
 }

@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <th><?= __('Logo') ?></th>
-                    <td><?= h($vendor->logo) ?></td>
+                    <td><?= $this->Html->image('uploads/vendors/' . $vendor->logo, ['class' => 'index-images', 'escape' => false]) ?></td>
                 </tr>
             </table>
         </div>

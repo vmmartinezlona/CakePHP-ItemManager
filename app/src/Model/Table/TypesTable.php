@@ -40,10 +40,6 @@ class TypesTable extends Table
         $this->setTable('types');
         $this->setDisplayField('name');
         $this->setPrimaryKey('type_id');
-
-        $this->addBehavior('CounterCache', [
-            'Items' => ['type_count']
-        ]);
     }
 
     /**

@@ -32,15 +32,15 @@
                 </tr> -->
                 <tr>
                     <th><?= __('Create Date') ?></th>
-                    <td><?= h($user->create_date) ?></td>
+                    <td><?= h($user->created_date) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Is Active') ?></th>
-                    <td><?= $user->is_active ? __('Yes') : __('No'); ?></td>
+                    <td><?= $user->isActive ? __('Yes') : __('No'); ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Is Admin') ?></th>
-                    <td><?= $user->isAdmin ? __('Yes') : __('No'); ?></td>
+                    <td><?= $user->is_admin ? __('Yes') : __('No'); ?></td>
                 </tr>
             </table>
         </div>

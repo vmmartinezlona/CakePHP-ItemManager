@@ -32,8 +32,8 @@ class UsersController extends AppController
         $this->Authorization->skipAuthorization();   
         $this->authorizedFlow();
         
-        if($this->request->getQuery('user_id')) {
-            $user_id = $this->request->getQuery('user_id');
+        if($this->request->getQuery('id')) {
+            $user_id = $this->request->getQuery('id');
             $action = $this->request->getQuery('action');
             if($this->changeStatus($user_id, $action)) {
                 $this->Flash->success(__('The user has been saved.'));
@@ -49,9 +49,9 @@ class UsersController extends AppController
     public function changeStatus($user_id, $action) {
         $user = $this->Users->get($user_id, ['contain' => []]);
         if($action == 'active') {
-            $user->is_active = !$user->is_active; 
+            $user->isActive = $user->isActive ? 0 : 1; 
         } else {
-            $user->isAdmin = !$user->isAdmin; 
+            $user->is_admin = $user->is_admin ? 0 : 1;
         }
         return $this->Users->save($user);
     }
@@ -82,11 +82,11 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         $this->Authorization->authorize($user);
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
                 return $this->redirect(['action' => 'index']);
             }
+
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
         $this->set(compact('user'));
@@ -145,7 +145,6 @@ class UsersController extends AppController
         $this->Authorization->skipAuthorization();
         $this->request->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
-        // dump($result->isValid());
         // regardless of POST or GET, redirect if user is logged in
         if ($result->isValid()) {
             // redirect to /articles after login success
@@ -175,7 +174,7 @@ class UsersController extends AppController
 
 
     public function isAuthorized() {
-        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+        return $_SESSION['Auth']['is_admin'];
     }
 
     public function redirectToRoot() {

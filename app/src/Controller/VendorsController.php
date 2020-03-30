@@ -13,7 +13,6 @@ class VendorsController extends AppController
             $vendors = $this->paginate($this->Vendors);
         } else {    
             $this->set('isAdmin', false);
-            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
             $user_id = $_SESSION['Auth']['id'];
             $vendors = $this->paginate($this->Vendors->find('all')->where(['Vendors.user_id =' => $user_id]));
         }     
@@ -29,8 +28,6 @@ class VendorsController extends AppController
 
     public function add()
     {
-        // $this->Authorization->skipAuthorization();
-        // $this->authorizedFlow();
         $vendor = $this->Vendors->newEmptyEntity();
         $this->Authorization->authorize($vendor);
         if ($this->request->is('post')) {
@@ -42,7 +39,6 @@ class VendorsController extends AppController
     private function saveVendor($vendor)
     {
         $vendor = $this->Vendors->patchEntity($vendor, $this->request->getData());
-        // $vendor->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
         $vendor->user_id = $_SESSION['Auth']['id'];
         $filename = $this->uploadImage($this->request);
         if($filename) {
@@ -92,7 +88,7 @@ class VendorsController extends AppController
     }
 
     public function isAdmin() {
-        return $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+        return $_SESSION['Auth']['is_admin'];
     }
 
     public function redirectToRoot() {

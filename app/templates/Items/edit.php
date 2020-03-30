@@ -33,7 +33,6 @@
                     echo $this->Form->control('photo');
                     echo $this->Form->control('created_date', ['empty' => true]);
                     echo $this->Form->control('tags._ids', ['options' => $tags, 'multiple' => 'multiple']);
-                    // echo $this->Form->control('user_id');
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

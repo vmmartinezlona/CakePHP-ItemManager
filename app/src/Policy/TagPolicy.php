@@ -33,6 +33,6 @@ class VendorPolicy
 
 
     protected function isAdmin(IdentityInterface $user) {
-        return $user->getOriginalData()->is_admin;
+        return $_SESSION['Auth']['is_admin'];
     }
 }

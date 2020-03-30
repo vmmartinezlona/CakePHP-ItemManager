@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <th><?= __('Photo') ?></th>
-                    <td><?= h($item->photo) ?></td>
+                    <td><?= $this->Html->image('uploads/items/' . $item->photo, ['class' => 'index-images', 'escape' => false]) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Id') ?></th>

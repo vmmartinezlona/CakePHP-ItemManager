@@ -17,13 +17,9 @@
             <fieldset>
                 <legend><?= __('Add User') ?></legend>
                 <?php
-                    // echo $this->Form->control('user_id');
-                    // echo $this->Form->control('user_id', ['type' => 'hidden', 'value' => 12]);
                     echo $this->Form->control('username');
                     echo $this->Form->control('email');
                     echo $this->Form->control('password');
-                    echo $this->Form->control('is_active');
-                    // echo $this->Form->control('create_date');
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

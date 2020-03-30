@@ -17,11 +17,6 @@ class ItemsController extends AppController
     {
         $this->Authorization->skipAuthorization();
         $this->paginate = ['contain' => ['Tags', 'vendors', 'types']];
-
-        // dump($this->Authentication);
-        // dump(CakeSession::read('Auth.User.id'));
-        // dump( $_SESSION['Auth']['id']);
-
         $newestItems = $this->getLastItems(3);
         $itemsColors = $this->getColorList();
 
@@ -34,7 +29,6 @@ class ItemsController extends AppController
         if ($this->isAdmin()) {
             $query = $this->Items->find('all', ['fields' => ['Items.color']]);
         } else {
-            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
             $user_id = $_SESSION['Auth']['id'];
             $query = $this->Items->find('all', ['fields' => ['Items.color']])->where(['Items.user_id =' => $user_id]);
         }
@@ -47,7 +41,6 @@ class ItemsController extends AppController
 
     private function getIndexItems($request, $itemsColors) 
     {
-        // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
         $user_id = $_SESSION['Auth']['id'];
         $searchString = $this->builSearchString($request, $itemsColors);
         if ($searchString) {
@@ -117,9 +110,9 @@ class ItemsController extends AppController
     {
         $item = $this->Items->newEmptyEntity();
         $this->Authorization->authorize($item);
-        // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
         $user_id = $_SESSION['Auth']['id'];
         if ($this->request->is('post')) {
+            $item->user_id = $user_id;
             $this->saveItem($item);
         }
         $tags = $this->Items->Tags->find('list', ['limit' => 200]);
@@ -131,7 +124,6 @@ class ItemsController extends AppController
 
     private function saveItem($item) {
         $item = $this->Items->patchEntity($item, $this->request->getData());
-        // $item->user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
         $user_id = $_SESSION['Auth']['id'];
         $filename = $this->uploadImage($this->request);
         if ($filename) {
@@ -250,10 +242,7 @@ class ItemsController extends AppController
                 'limit' => $limit,
                 'order' => 'Items.created_date DESC']);
         } else {
-            // $user_id = $this->request->getAttribute('identity')->getOriginalData()->user_id;
-            $user_id = $_SESSION['Auth']['id'];
-            // dump($user_id);
-            
+            $user_id = $_SESSION['Auth']['id'];            
             return $this->Items->find('all', [
                 'contain' => ['Tags', 'vendors', 'types'],
                 'limit' => $limit,
@@ -263,7 +252,7 @@ class ItemsController extends AppController
     }
 
     private function isAdmin() {
-        $isAdmin = $this->request->getAttribute('identity')->getOriginalData()->isAdmin;
+        $isAdmin = $_SESSION['Auth']['is_admin'];
         $this->set('isAdmin', $isAdmin);
         return $isAdmin;
     }

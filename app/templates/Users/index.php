@@ -30,20 +30,20 @@
                 <tr>
                     <td><?= h($user->username) ?></td>
                     <td><?= h($user->email) ?></td>
-                    <td><?= $user->is_active ? 
+                    <td><?= $user->isActive ? 
                         $this->Form->button('Yes', [
                             'class' => 'yes-btn ', 
-                            'onclick' => 'changeUserStatus(' . $user->user_id . ', "active")']) : 
-                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->user_id . ', "active")']) ?></td>
-                    <td><?= $user->isAdmin ? 
+                            'onclick' => 'changeUserStatus(' . $user->id . ', "active")']) : 
+                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->id . ', "active")']) ?></td>
+                    <td><?= $user->is_admin ? 
                         $this->Form->button('Yes', [
                             'class' => 'yes-btn',
-                            'onclick' => 'changeUserStatus(' . $user->user_id . ', "admin")']) : 
-                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->user_id . ', "admin")']) ?></td>
+                            'onclick' => 'changeUserStatus(' . $user->id . ', "admin")']) : 
+                        $this->Form->button('No', ['onclick' => 'changeUserStatus(' . $user->id . ', "admin")']) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $user->user_id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->user_id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->user_id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->user_id)]) ?>
+                        <?= $this->Html->link(__('View'), ['action' => 'view', $user->id]) ?>
+                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
+                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id)]) ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -65,15 +65,17 @@
 <script>
 
     function changeUserStatus(userId, action) {
+        console.log(userId, action);
         var targetUrl =  '<?= $this->Url->build('/users/index', []) ?>';
+        var resultUrl = window.location.href + `?id=${userId}&action=${action}`;
         $.ajax({
             url: targetUrl,
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
-            data: { "user_id": userId, "action": action},
+            data: { "id": userId, "action": action},
             success: function(data){
                 console.log('success');
-                // location.reload();
+                window.location.replace(resultUrl);
             }
         });
     }  
